@@ -169,15 +169,9 @@ export default function Home() {
     setInput('');
     setIsLoading(true);
 
-    // Create streaming message placeholder
-    const streamMsgId = `${Date.now()}-stream`;
-    setStreamingId(streamMsgId);
-    setStreamingMessage('');
-
-    abortControllerRef.current = new AbortController();
-
     try {
-      const response = await fetch(`${apiBaseUrl}/api/chat/stream`, {
+      // Use relative path (rewrites will handle proxying to backend)
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -187,91 +181,46 @@ export default function Home() {
           language,
           sessionId: sessionId || undefined,
         }),
-        signal: abortControllerRef.current.signal,
       });
 
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let fullResponse = '';
-      let sources: string[] = [];
+      const result = await response.json();
 
-      while (reader) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      if (!result.success) {
+        throw new Error(result.error || 'Chat request failed');
+      }
+      
+      if (result.success && result.data) {
+        const assistantMessage: Message = {
+          id: `${Date.now()}-assistant`,
+          role: 'assistant',
+          content: result.data.response,
+          sources: result.data.sources || ['Bauchi State Government Records'],
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6);
-            if (data === '[DONE]') continue;
-
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.error) {
-                throw new Error(parsed.error);
-              }
-              if (parsed.content) {
-                fullResponse += parsed.content;
-                setStreamingMessage(fullResponse);
-              }
-              if (parsed.done) {
-                // Stream complete
-                break;
-              }
-              if (parsed.sources) {
-                sources = parsed.sources;
-              }
-            } catch (e) {
-              // Skip invalid JSON
-            }
-          }
+        if (result.data.sessionId && !sessionId) {
+          setSessionId(result.data.sessionId);
         }
       }
-
-      // Add final message
-      const assistantMessage: Message = {
-        id: `${Date.now()}-assistant`,
-        role: 'assistant',
-        content: fullResponse,
-        sources: sources.length > 0 ? sources : ['Bauchi State Government Records'],
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-      setStreamingMessage('');
-      setStreamingId(null);
-
-      if (sessionId === null) {
-        setSessionId(`session_${Date.now()}`);
-      }
     } catch (error: any) {
-      if (error.name === 'AbortError') {
-        console.log('Request aborted');
-        return;
-      }
-
       console.error('Chat error:', error);
       const errorMessage: Message = {
         id: `${Date.now()}-error`,
         role: 'assistant',
         content:
           language === 'en'
-            ? `⚠️ Unable to connect to AI service. Error: ${error?.message || 'Unknown error'}. Please confirm backend is running at ${apiBaseUrl}`
-            : `⚠️ An kasa hada sabis na AI. Kuskure: ${error?.message || 'Unknown error'}. Tabbatar backend yana aiki a ${apiBaseUrl}`,
+            ? `⚠️ Unable to connect to AI service. Please confirm backend is running.`
+            : `⚠️ An kasa hada sabis na AI. Tabbatar backend yana aiki.`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
-      setStreamingMessage('');
-      setStreamingId(null);
     } finally {
       setIsLoading(false);
-      abortControllerRef.current = null;
     }
   };
 
