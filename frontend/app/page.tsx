@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { VoiceControls } from '@/components/VoiceControls';
+import { getVoiceService } from '@/lib/voice.service';
 import {
   Activity,
   AudioLines,
@@ -126,12 +128,14 @@ export default function Home() {
   const [showSources, setShowSources] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [voicePreview, setVoicePreview] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [streamingMessage, setStreamingMessage] = useState<string>('');
   const [streamingId, setStreamingId] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const voiceAutoSendTimeoutRef = useRef<number | null>(null);
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -154,10 +158,9 @@ export default function Home() {
     if (window.innerWidth < 1024) setSidebarOpen(false);
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const outboundText = input.trim();
+  const handleSend = async (messageOverride?: string) => {
+    const outboundText = (messageOverride ?? input).trim();
+    if (!outboundText || isLoading) return;
     const userMessage: Message = {
       id: `${Date.now()}-user`,
       role: 'user',
@@ -203,6 +206,14 @@ export default function Home() {
         };
         setMessages((prev) => [...prev, assistantMessage]);
 
+        // Auto-speak the response.
+        try {
+          const voiceService = getVoiceService();
+          await voiceService.speak(result.data.response, language);
+        } catch (error) {
+          console.warn('Voice playback failed:', error);
+        }
+
         if (result.data.sessionId && !sessionId) {
           setSessionId(result.data.sessionId);
         }
@@ -230,6 +241,30 @@ export default function Home() {
       void handleSend();
     }
   };
+
+  const handleVoiceTranscript = (text: string) => {
+    const normalizedText = text.trim();
+    setInput(normalizedText);
+
+    if (voiceAutoSendTimeoutRef.current) {
+      window.clearTimeout(voiceAutoSendTimeoutRef.current);
+    }
+
+    // Auto-send only the latest finalized voice input.
+    voiceAutoSendTimeoutRef.current = window.setTimeout(() => {
+      if (normalizedText) {
+        void handleSend(normalizedText);
+      }
+    }, 500);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (voiceAutoSendTimeoutRef.current) {
+        window.clearTimeout(voiceAutoSendTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-hidden text-[#2C2418]">
@@ -413,7 +448,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.05 }}
             >
-              <SoundWavePlaceholder active={voicePreview || isLoading} />
+              <SoundWavePlaceholder active={voicePreview || isLoading || isSpeaking} />
               <div className="mt-3 grid grid-cols-3 gap-2 text-[11px]">
                 <div className="rounded-xl bg-[#FFFDF9]/80 border border-[#C9A03D]/25 p-3">
                   <p className="text-[#5C5543]">Latency</p>
@@ -570,6 +605,14 @@ export default function Home() {
                   />
 
                   <div className="flex items-center gap-2 px-1 pb-1">
+                    {/* Voice Controls */}
+                    <VoiceControls
+                      onTranscript={handleVoiceTranscript}
+                      onSpeakStart={() => setIsSpeaking(true)}
+                      onSpeakEnd={() => setIsSpeaking(false)}
+                      language={language}
+                    />
+
                     <button
                       onClick={() => setVoicePreview((prev) => !prev)}
                       className={`p-2.5 rounded-xl border transition ${
