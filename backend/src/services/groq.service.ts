@@ -24,33 +24,15 @@ export class GroqService {
     conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>,
   ): Promise<string> {
     try {
-      const systemPrompt = this.getSystemPrompt(language);
-      
-      // Build messages array
-      const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
-        { role: 'system', content: systemPrompt }
-      ];
-
-      // Add conversation history
-      if (conversationHistory && conversationHistory.length > 0) {
-        const recentHistory = conversationHistory.slice(-10);
-        for (const turn of recentHistory) {
-          messages.push({
-            role: turn.role,
-            content: turn.content
-          });
-        }
-      }
-
-      // Add current user message
-      messages.push({ role: 'user', content: message });
+      const messages = this.buildMessages(message, language, conversationHistory);
 
       const chatCompletion = await this.groq.chat.completions.create({
-        messages: messages,
+        messages,
         model: 'llama-3.1-8b-instant',
         temperature: 0.7,
         max_tokens: 800,
         top_p: 0.9,
+        stream: false,
       });
 
       const response = chatCompletion.choices[0]?.message?.content || '';
@@ -61,6 +43,57 @@ export class GroqService {
     }
   }
 
+  async *generateStream(
+    message: string,
+    language: 'en' | 'ha',
+    conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>,
+  ): AsyncGenerator<any, void, unknown> {
+    try {
+      const messages = this.buildMessages(message, language, conversationHistory);
+
+      const stream = await this.groq.chat.completions.create({
+        messages,
+        model: 'llama-3.1-8b-instant',
+        temperature: 0.7,
+        max_tokens: 800,
+        top_p: 0.9,
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        yield chunk;
+      }
+    } catch (error: any) {
+      this.logger.error(`Groq stream error: ${error?.message || 'Unknown error'}`);
+      throw error;
+    }
+  }
+
+  private buildMessages(
+    message: string,
+    language: 'en' | 'ha',
+    conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>,
+  ): Array<{ role: 'system' | 'user' | 'assistant'; content: string }> {
+    const systemPrompt = this.getSystemPrompt(language);
+    
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+      { role: 'system', content: systemPrompt }
+    ];
+
+    if (conversationHistory && conversationHistory.length > 0) {
+      const recentHistory = conversationHistory.slice(-10);
+      for (const turn of recentHistory) {
+        messages.push({
+          role: turn.role,
+          content: turn.content
+        });
+      }
+    }
+
+    messages.push({ role: 'user', content: message });
+    return messages;
+  }
+
   private formatResponse(text: string): string {
     let formatted = text
       .replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -68,7 +101,6 @@ export class GroqService {
       .replace(/([•\-*])([A-Za-z])/g, '$1 $2')
       .replace(/:(?=[A-Za-z])/g, ': ')
       .replace(/\s+/g, ' ')
-      .replace(/['"]/g, '')
       .trim();
 
     return formatted;
