@@ -4,3 +4,97 @@ Backend running on http://localhost:4000
 Failed to obtain server version. Unable to check client-server compatibility. Set checkCompatibility=false to skip version check.
 [Nest] 2684  - 06/21/2026, 7:56:27 PM   ERROR [QdrantService] Error searching: fetch failed
 [Nest] 2684  - 06/21/2026, 7:56:44 PM   ERROR [QdrantService] Error searching: fetch failed
+
+========================================================================================================
+
+[7:55:11 PM] Starting compilation in watch mode...
+
+[7:55:56 PM] Found 0 errors. Watching for file changes.
+
+◇ injected env (10) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [NestFactory] Starting Nest application...
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [InstanceLoader] AppModule dependencies initialized +77ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [InstanceLoader] ChatModule dependencies initialized +3ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [InstanceLoader] DocumentsModule dependencies initialized +0ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RoutesResolver] ChatController {/api/chat}: +6ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RouterExplorer] Mapped {/api/chat, POST} route +4ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RouterExplorer] Mapped {/api/chat/stream, POST} route +2ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RoutesResolver] DocumentsController {/api/documents}: +0ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RouterExplorer] Mapped {/api/documents/upload, POST} route +1ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RouterExplorer] Mapped {/api/documents/search/:query, GET} route +2ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RouterExplorer] Mapped {/api/documents/status, GET} route +1ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [RouterExplorer] Mapped {/api/documents/clear, DELETE} route +1ms
+[Nest] 2684  - 06/21/2026, 7:56:01 PM     LOG [NestApplication] Nest application successfully started +6ms
+Backend running on http://localhost:4000
+Failed to obtain server version. Unable to check client-server compatibility. Set checkCompatibility=false to skip version check.
+[Nest] 2684  - 06/21/2026, 7:56:27 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:56:44 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:58:07 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:58:07 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:58:49 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:58:49 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:58:49 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:58:51 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 7:58:52 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:05:36 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:05:48 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:06:04 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:07:00 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:07:18 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:07:37 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:21:16 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:24:24 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:24:43 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:25:19 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:37:14 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:38:47 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:42:52 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:43:35 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:44:54 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:45:14 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:45:38 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:45:58 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:46:22 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:47:15 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:47:38 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 8:48:05 PM   ERROR [QdrantService] Error searching: fetch failed
+[Nest] 2684  - 06/21/2026, 9:30:37 PM   ERROR [QdrantService] Error searching: fetch failed
+
+
+
+You’ll get a fully working end-to-end feature in the app, but only after a few required inputs from your side.
+
+Short answer:
+1. I can implement all code integration (frontend + backend + fallback + controls).
+2. You still must provide external voice assets/config to make it truly “Governor voice.”
+
+What you must provide:
+1. A voice-cloning provider account (for example ElevenLabs/Azure/Resemble).
+2. API key and selected voice ID.
+3. Legal consent confirmation for this exact use.
+4. Voice training data if the provider has not already created the voice model.
+5. Environment variables in your deployment.
+
+So:
+1. If you already have a trained Governor voice model at a provider, I can wire it and you’ll have working responses immediately.
+2. If you don’t, you must first upload/provide Governor voice samples to that provider and create/train the voice.
+
+Practical expectation:
+1. Code integration: same day.
+2. Voice model readiness: depends on provider workflow and audio quality (often minutes to a few hours).
+
+If you want, next step I can implement the integration now with:
+1. Governor-voice mode toggle
+2. Backend synth endpoint
+3. Browser TTS fallback
+4. Error handling and retry
+5. Config via env vars so you only plug in key + voice ID.
+
+
+Step 7: Test Admin Login
+Go to http://localhost:3000/admin/login and login with:
+
+Email: admin@bauchi.gov.ng
+
+Password: admin123 (or whatever you set)
